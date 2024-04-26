@@ -2,14 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ShortcutService } from './shortcut.service';
 import { CreateShortcutDto } from './dto/create-shortcut.dto';
 import { UpdateShortcutDto } from './dto/update-shortcut.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('product')
 @Controller('shortcut')
 export class ShortcutController {
   constructor(private readonly shortcutService: ShortcutService) {}
 
   @Post()
-  create(@Body() createShortcutDto: CreateShortcutDto) {
-    return this.shortcutService.create(createShortcutDto);
+  async create(
+    @Body() { link, linkShort}: CreateShortcutDto,
+  ) {
+    return this.shortcutService.create({ link, linkShort});
   }
 
   @Get()

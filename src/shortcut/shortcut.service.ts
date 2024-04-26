@@ -1,19 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShortcutDto } from './dto/create-shortcut.dto';
 import { UpdateShortcutDto } from './dto/update-shortcut.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ShortcutService {
-  create(createShortcutDto: CreateShortcutDto) {
-    return 'This action adds a new shortcut';
+  constructor(private readonly prisma: PrismaService) {}
+  async create({link, linkShort}: CreateShortcutDto) {
+    return this.prisma.domain.create({
+      data: {
+        link,
+        linkShort
+      }
+    })
   }
 
   findAll() {
-    return `This action returns all shortcut`;
+    return  this.prisma.domain.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} shortcut`;
+  async findOne(id: number) {
+    if (!(await this.prisma.domain.findUnique({ where: { id } }))) {
+      throw new NotFoundException('ID not found');
+    }
+    return this.prisma.domain.findUnique({
+      where: {
+        id
+      }
+    })
   }
 
   update(id: number, updateShortcutDto: UpdateShortcutDto) {
