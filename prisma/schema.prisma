@@ -1,0 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Domains {
+  id        BigInt  @id @unique(map: "id") @default(autoincrement()) @db.UnsignedBigInt
+  link      String  @db.Text
+  linkShort String? @db.Text
+}
